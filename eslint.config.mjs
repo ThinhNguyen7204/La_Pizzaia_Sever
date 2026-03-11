@@ -14,7 +14,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-inferrable-types': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'prettier/prettier': [
         'warn',

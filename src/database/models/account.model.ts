@@ -18,5 +18,5 @@ class AccountModel {
   }
 }
 
-const accountModel = new AccountModel()
-export default accountModel
+const Account = new AccountModel()
+export default Account

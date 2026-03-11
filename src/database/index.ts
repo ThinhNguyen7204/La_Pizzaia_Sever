@@ -1,17 +1,16 @@
 import { error } from 'node:console'
 import { Db, MongoClient, ServerApiVersion } from 'mongodb'
-import 'dotenv/config'
+import envConfig from '~/config'
+import { en } from 'zod/v4/locales'
 
-const databaseName = process.env.DB_USERNAME
-const databasePassword = process.env.DB_PASSWORD
-const uri = `mongodb+srv://${databaseName}:${databasePassword}@cluster0.ww7jj.mongodb.net/?appName=Cluster0`
+const uri = `mongodb+srv://${envConfig.DB_USERNAME}:${envConfig.DB_PASSWORD}@cluster0.ww7jj.mongodb.net/?appName=Cluster0`
 
 class DatabaseService {
   private client: MongoClient
   public db!: Db
   constructor() {
     this.client = new MongoClient(uri)
-    this.db = this.client.db(process.env.DB_NAME)
+    this.db = this.client.db(envConfig.DB_NAME)
   }
   async connect() {
     try {
