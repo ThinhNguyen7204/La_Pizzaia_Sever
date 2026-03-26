@@ -1,8 +1,16 @@
 import envConfig from '~/config'
 import { Role } from '~/constants/type'
 import Account from '~/database/models/account.model'
+import accountService from '~/services/account.service'
 import { hashPassword } from '~/utils/crypto'
 import { getChalk } from '~/utils/helpers'
+import { Request, Response } from 'express'
+import {
+  ChangePasswordBodyType,
+  CreateEmployeeAccountBodyType,
+  UpdateEmployeeAccountBodyType,
+  UpdateMeBodyType
+} from '~/schemaValidations/account.schema'
 
 export const initAdminAccount = async () => {
   const accountCount = await Account.collection.countDocuments()
@@ -25,4 +33,78 @@ export const initAdminAccount = async () => {
       )
     )
   }
+}
+
+export const getAccountListController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.getAccountList()
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const createEmployeeAccountController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.createEmployeeAccount(req.body as CreateEmployeeAccountBodyType)
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const getEmployeeAccountController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.getEmployeeAccount(req.params.id as string)
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const updateEmployeeAccountController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.updateEmployeeAccount(
+    req.params.id as string,
+    req.body as UpdateEmployeeAccountBodyType
+  )
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const deleteEmployeeAccountController = async (req: Request, res: Response) => {
+  console.log('deleteEmployeeAccountController called with accountId:', req.params.id)
+  const { data, message } = await accountService.deleteEmployeeAccount(req.params.id as string)
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const getMeController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.getMe(req.decodedAccessToken?.userId as string)
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const updateMeController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.updateMe(
+    req.decodedAccessToken?.userId as string,
+    req.body as UpdateMeBodyType
+  )
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const changePasswordController = async (req: Request, res: Response) => {
+  const { data, message } = await accountService.changePassword(
+    req.decodedAccessToken?.userId as string,
+    req.body as ChangePasswordBodyType
+  )
+  return res.json({
+    message,
+    data
+  })
 }

@@ -37,14 +37,14 @@ export const signRefreshToken = (
   return signSync({ ...restPayload, tokenType: TokenType.RefreshToken })
 }
 
-export const veryfyAccessToken = (token: string) => {
+export const verifyAccessToken = (token: string) => {
   const verifySync = createVerifier({
     key: envConfig.ACCESS_TOKEN_SECRET
   })
   return verifySync(token) as TokenPayload
 }
 
-export const veryfyRefreshToken = (token: string) => {
+export const verifyRefreshToken = (token: string) => {
   const verifySync = createVerifier({
     key: envConfig.REFRESH_TOKEN_SECRET
   })

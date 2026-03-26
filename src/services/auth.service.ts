@@ -1,8 +1,8 @@
 import Account from '~/database/models/account.model'
-import { LoginBodyType, RefreshTokenBodyType } from '~/schemaValidations/auth.schema'
+import { LoginBodyType, LogoutBodyType, RefreshTokenBodyType } from '~/schemaValidations/auth.schema'
 import { RoleType, TokenPayload } from '~/types/jwt.types'
 import { comparePassword } from '~/utils/crypto'
-import { signAccessToken, signRefreshToken, veryfyRefreshToken } from '~/utils/jwt'
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '~/utils/jwt'
 import { addMilliseconds } from 'date-fns'
 import ms, { type StringValue } from 'ms'
 import envConfig from '~/config'
@@ -11,6 +11,13 @@ import { verify } from 'node:crypto'
 import { AuthError } from '~/utils/errors'
 
 class AuthService {
+  async logout(body: LogoutBodyType) {
+    await RefreshToken.collection.deleteOne({ token: body.refreshToken })
+    return {
+      message: 'Logout successful'
+    }
+  }
+
   async login(body: LoginBodyType) {
     const { email, password } = body
     const account = await Account.collection.findOne({
@@ -54,7 +61,7 @@ class AuthService {
     const { refreshToken } = body
     let decodedRefreshToken: TokenPayload
     try {
-      decodedRefreshToken = veryfyRefreshToken(refreshToken)
+      decodedRefreshToken = verifyRefreshToken(refreshToken)
     } catch (error) {
       throw new Error('Invalid refresh token')
     }

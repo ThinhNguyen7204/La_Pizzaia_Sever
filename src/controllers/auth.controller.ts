@@ -1,31 +1,38 @@
 import { Request, Response } from 'express'
-import { LoginBodyType, RefreshTokenBodyType } from '~/schemaValidations/auth.schema'
+import { LoginBodyType, LogoutBodyType, RefreshTokenBodyType } from '~/schemaValidations/auth.schema'
 import authService from '~/services/auth.service'
 
+export const logOutController = async (req: Request, res: Response) => {
+  const { message } = await authService.logout(req.body as LogoutBodyType)
+  return res.json({
+    message
+  })
+}
+
 export const loginController = async (req: Request, res: Response) => {
-  try {
-    const { accessToken, refreshToken, account } = await authService.login(req.body as LoginBodyType)
-    res.json({
-      message: 'Login successful',
-      data: { account, accessToken, refreshToken }
+  const { accessToken, refreshToken, account } = await authService.login(req.body as LoginBodyType)
+  if (!accessToken || !refreshToken || !account) {
+    return res.status(400).json({
+      message: 'Login failed'
     })
-  } catch (error) {
-    console.error('Login error:', error)
-    throw error
   }
+  return res.json({
+    message: 'Login successful',
+    data: { account, accessToken, refreshToken }
+  })
 }
 
 export const refreshTokenController = async (req: Request, res: Response) => {
-  try {
-    const { accessToken, refreshToken } = await authService.refreshToken(req.body as RefreshTokenBodyType)
-    res.json({
-      message: 'Take refreshToken successful',
-      data: { accessToken, refreshToken }
+  const { accessToken, refreshToken } = await authService.refreshToken(req.body as RefreshTokenBodyType)
+  if (!accessToken || !refreshToken) {
+    return res.status(400).json({
+      message: 'Take refresh-token failed'
     })
-  } catch (error) {
-    console.error('RefreshToken error:', error)
-    throw error
   }
+  return res.json({
+    message: 'Take refresh-token successful',
+    data: { accessToken, refreshToken }
+  })
 }
 
 export const registerController = (req: Request, res: Response) => {

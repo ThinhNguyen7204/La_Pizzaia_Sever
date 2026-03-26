@@ -7,6 +7,7 @@ export const wrapRequestHandler = <P = any, ResBody = any, ReqBody = any, ReqQue
     try {
       await func(req, res, next)
     } catch (error) {
+      console.error('Error in request handler:', error)
       next(error)
     }
   }

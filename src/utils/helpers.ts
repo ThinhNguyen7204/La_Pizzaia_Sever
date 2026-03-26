@@ -12,3 +12,8 @@ export const getChalk = async () => {
   const chalk = (await import('chalk')).default
   return chalk
 }
+
+export const omitPassword = (account: any) => {
+  const { password, ...rest } = account
+  return rest
+}
