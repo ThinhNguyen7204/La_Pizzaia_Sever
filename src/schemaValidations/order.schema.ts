@@ -23,8 +23,8 @@ export const CreateOrderBody = z.object({
 })
 export type CreateOrderBodyType = z.TypeOf<typeof CreateOrderBody>
 
-export const UpdateOrderStatusBody = z.object({ status: z.enum(OrderStatusValues) })
-export type UpdateOrderStatusBodyType = z.TypeOf<typeof UpdateOrderStatusBody>
+export const UpdateOrderBody = CreateOrderBody.partial()
+export type UpdateOrderBodyType = z.TypeOf<typeof UpdateOrderBody>
 
 export const OrderRes = z.object({ data: z.any(), message: z.string() })
 export type OrderResType = z.TypeOf<typeof OrderRes>
@@ -32,3 +32,9 @@ export const OrderListRes = z.object({ data: z.array(z.any()), message: z.string
 export type OrderListResType = z.TypeOf<typeof OrderListRes>
 export const OrderParams = z.object({ id: z.string() })
 export type OrderParamsType = z.TypeOf<typeof OrderParams>
+
+export const OrderQuery = z.object({
+  customer_id: z.string().optional(),
+  status: z.string().optional()
+})
+export type OrderQueryType = z.TypeOf<typeof OrderQuery>

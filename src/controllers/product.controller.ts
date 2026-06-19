@@ -1,6 +1,6 @@
 import productService from '~/services/product.service'
 import { Request, Response } from 'express'
-import { CreateProductBodyType, UpdateProductBodyType } from '~/schemaValidations/product.schema'
+import { CreateProductBodyType, ProductParamsType, UpdateProductBodyType } from '~/schemaValidations/product.schema'
 
 export const getProductListController = async (req: Request, res: Response) => {
   const { data, message } = await productService.getProductList()
@@ -11,7 +11,7 @@ export const getProductListController = async (req: Request, res: Response) => {
 }
 
 export const getProductDetailController = async (req: Request, res: Response) => {
-  const { data, message } = await productService.getDetailProduct(req.params.id as string)
+  const { data, message } = await productService.getDetailProduct(req.params as ProductParamsType)
   return res.json({
     message,
     data
@@ -28,7 +28,7 @@ export const createProductController = async (req: Request, res: Response) => {
 
 export const updateProductController = async (req: Request, res: Response) => {
   const { data, message } = await productService.updateProduct(
-    req.params.id as string,
+    req.params as ProductParamsType,
     req.body as UpdateProductBodyType
   )
   return res.json({
@@ -38,7 +38,7 @@ export const updateProductController = async (req: Request, res: Response) => {
 }
 
 export const deteleProductController = async (req: Request, res: Response) => {
-  const { data, message } = await productService.deleteProduct(req.params.id as string)
+  const { data, message } = await productService.deleteProduct(req.params as ProductParamsType)
   return res.json({
     message,
     data

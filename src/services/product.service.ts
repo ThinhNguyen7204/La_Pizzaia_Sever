@@ -1,3 +1,4 @@
+import { ProductParamsType } from './../schemaValidations/product.schema'
 import { ObjectId } from 'mongodb'
 import { de } from 'zod/v4/locales'
 import Product from '~/database/models/product.model'
@@ -19,7 +20,8 @@ class ProductService {
     } as ProductListResType
   }
 
-  async getDetailProduct(productId: string) {
+  async getDetailProduct(params: ProductParamsType) {
+    const { id: productId } = params
     if (!ObjectId.isValid(productId)) throw new StatusError({ message: 'Product does not exist', status: 404 })
     const product = await Product.collection.findOne({ _id: new ObjectId(productId) })
     if (!product) throw new StatusError({ message: 'Product does not exist', status: 404 })
@@ -48,7 +50,8 @@ class ProductService {
     } as ProductResType
   }
 
-  async updateProduct(productId: string, body: UpdateProductBodyType) {
+  async updateProduct(params: ProductParamsType, body: UpdateProductBodyType) {
+    const { id: productId } = params
     if (!ObjectId.isValid(productId)) throw new StatusError({ message: 'Product does not exist', status: 404 })
     const updatedProduct = await Product.collection.findOneAndUpdate(
       { _id: new ObjectId(productId) },
@@ -62,7 +65,8 @@ class ProductService {
     } as ProductResType
   }
 
-  async deleteProduct(productId: string) {
+  async deleteProduct(params: ProductParamsType) {
+    const { id: productId } = params
     if (!ObjectId.isValid(productId)) throw new StatusError({ message: 'Product does not exist', status: 404 })
     const deletedProduct = await Product.collection.findOneAndDelete({ _id: new ObjectId(productId) })
     if (!deletedProduct) throw new StatusError({ message: 'Product does not exist', status: 404 })
