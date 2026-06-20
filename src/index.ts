@@ -17,6 +17,7 @@ import voucherRoutes from '~/routes/voucher.route'
 import loyaltyProgramRoutes from '~/routes/loyaltyProgram.route'
 import mediaRoutes from '~/routes/media.route'
 import staticRoutes from '~/routes/static.route'
+import indicatorRoutes from '~/routes/indicator.route'
 
 const app = express()
 const port = envConfig.PORT || 4000
@@ -37,6 +38,7 @@ app.use('/vouchers', voucherRoutes)
 app.use('/loyalty-programs', loyaltyProgramRoutes)
 app.use('/media', mediaRoutes)
 app.use('/static', staticRoutes)
+app.use('/indicators', indicatorRoutes)
 
 // Error handler
 app.use(errorHandlerMiddleware)
