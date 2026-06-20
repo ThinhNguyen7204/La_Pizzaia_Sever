@@ -26,8 +26,9 @@ class OrderService {
 
   async getDetailOrder(params: OrderParamsType) {
     const { id } = params
-    if (ObjectId.isValid(params.id)) throw new StatusError({ message: 'Order does not exist', status: 404 })
+    if (!ObjectId.isValid(id)) throw new StatusError({ message: 'Order does not exist', status: 404 })
     const order = await Order.collection.findOne({ _id: new ObjectId(id) })
+    if (!order) throw new StatusError({ message: 'Order does not exist', status: 404 })
     return {
       message: 'Get order detail successfully',
       data: order
@@ -52,12 +53,18 @@ class OrderService {
       discountLytP: body.discountLytP || 0,
       finalPrice: body.finalPrice || 0,
       voucher_id: data.voucher_id ? new ObjectId(data.voucher_id) : null,
-      loyalty_program_id: body.loyalty_program_id ? new ObjectId(body.loyalty_program_id) : null
+      loyalty_program_id: body.loyalty_program_id ? new ObjectId(body.loyalty_program_id) : null,
+      items: data.items.map((item: any) => ({
+        ...item,
+        product_id: new ObjectId(item.product_id)
+      })),
+      createdAt: now,
+      updatedAt: now
     }
     const order = await Order.collection.insertOne(newOrder)
     return {
       message: 'Create order successfully',
-      data: { _id: order.insertedId, ...order }
+      data: { ...newOrder, _id: order.insertedId }
     }
   }
 

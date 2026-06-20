@@ -33,7 +33,7 @@ const isStatusError = (error: any): error is StatusError => {
 export const errorHandlerMiddleware = (error: any, req: Request, res: Response, next: NextFunction) => {
   if (isEntityError(error)) {
     res.status(error.status).json({
-      message: 'Lỗi xảy ra khi xác thực dữ liệu...',
+      message: 'A validation error occurred',
       errors: error.fields,
       statusCode: error.status
     })
@@ -84,20 +84,20 @@ export const errorHandlerMiddleware = (error: any, req: Request, res: Response, 
     const keyPattern = (error as any).keyPattern || {}
     const field = Object.keys(keyPattern)[0] || 'unknown'
     res.status(statusCode).json({
-      message: `Giá trị ${field} đã tồn tại!`,
+      message: `${field} already exists!`,
       statusCode
     })
     return
   } else if (error.name === 'CastError') {
     res.status(400).json({
-      message: 'ID không hợp lệ!',
+      message: 'Invalid ID!',
       statusCode: 400
     })
     return
   } else {
     const statusCode = (error as any).statusCode || 500
     res.status(statusCode).json({
-      message: error.message || 'Lỗi server nội bộ',
+      message: error.message || 'Internal server error',
       error: process.env.NODE_ENV === 'development' ? error : undefined,
       statusCode
     })

@@ -73,9 +73,26 @@ class CartService {
       const result = await Cart.collection.insertOne(newCart)
       cart = { ...newCart, _id: result.insertedId }
     }
+
+    const existingItem = cart.items.find((item: any) => item.product_id.toString() === product_id)
+    if (existingItem) {
+      existingItem.quantity += quantity
+      existingItem.price = product.price
+    } else {
+      cart.items.push({ _id: new ObjectId(), product_id: product._id!, quantity, price: product.price })
+    }
+
+    cart.subTotal = cart.items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
+    cart.finalPrice = cart.subTotal - cart.discountAmount - cart.discountLytP
+
+    await Cart.collection.updateOne(
+      { _id: cart._id },
+      { $set: { items: cart.items, subTotal: cart.subTotal, finalPrice: cart.finalPrice, updatedAt: new Date() } }
+    )
+
     return {
-      data: cart,
-      message: 'Create cart successfully'
+      data: await this.populateCartItems(cart),
+      message: 'Add to cart successfully'
     } as CartResType
   }
 
@@ -108,10 +125,10 @@ class CartService {
   async removeCartItem(customerId: string, param: CartItemParamsType) {
     const { itemId } = param
     if (!ObjectId.isValid(customerId) || !ObjectId.isValid(itemId)) {
-      throw new StatusError({ message: 'Thông tin không hợp lệ', status: 400 })
+      throw new StatusError({ message: 'Information invalid', status: 400 })
     }
     const cart = await Cart.collection.findOne({ customer_id: new ObjectId(customerId) })
-    if (!cart) throw new StatusError({ message: 'Giỏ hàng không tồn tại', status: 404 })
+    if (!cart) throw new StatusError({ message: 'Cart does not exist', status: 404 })
 
     cart.items = cart.items.filter((i) => !i._id || i._id.toString() !== itemId)
     cart.subTotal = cart.items.reduce((sum, i) => sum + i.price * i.quantity, 0)

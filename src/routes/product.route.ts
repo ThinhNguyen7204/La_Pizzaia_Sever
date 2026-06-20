@@ -4,7 +4,7 @@ import {
   getProductDetailController,
   createProductController,
   updateProductController,
-  deteleProductController
+  deleteProductController
 } from '~/controllers/product.controller'
 import { requireAdmin, requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
@@ -43,7 +43,7 @@ productRoutes.delete(
   requireLogined,
   requireAdmin,
   validateRequest(z.object({ params: ProductParams })),
-  wrapRequestHandler(deteleProductController)
+  wrapRequestHandler(deleteProductController)
 )
 
 export default productRoutes

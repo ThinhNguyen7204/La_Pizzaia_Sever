@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { de } from 'zod/v4/locales'
-import Menu from '~/database/models/menu.models'
+import Menu from '~/database/models/menu.model'
 import Product from '~/database/models/product.model'
 import { CreateMenuBodyType, MenuListResType, MenuResType, UpdateMenuBodyType } from '~/schemaValidations/menu.schema'
 import { CreateProductBodyType, ProductListResType, UpdateProductBodyType } from '~/schemaValidations/product.schema'

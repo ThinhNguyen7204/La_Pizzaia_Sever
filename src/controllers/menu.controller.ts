@@ -34,7 +34,7 @@ export const updateMenuController = async (req: Request, res: Response) => {
   })
 }
 
-export const deteleMenuController = async (req: Request, res: Response) => {
+export const deleteMenuController = async (req: Request, res: Response) => {
   const { data, message } = await menuService.deleteMenu(req.params.id as string)
   return res.json({
     message,

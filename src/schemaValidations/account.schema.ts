@@ -37,7 +37,7 @@ export const CreateEmployeeAccountBody = z
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
-      ctx.addIssue({ code: 'custom', message: 'Mật khẩu không khớp', path: ['confirmPassword'] })
+      ctx.addIssue({ code: 'custom', message: 'Passwords do not match', path: ['confirmPassword'] })
     }
   })
 
@@ -59,11 +59,11 @@ export const UpdateEmployeeAccountBody = z
       if (!password || !confirmPassword) {
         ctx.addIssue({
           code: 'custom',
-          message: 'Hãy nhập mật khẩu mới và xác nhận mật khẩu mới',
+          message: 'Please enter new password and confirm new password',
           path: ['changePassword']
         })
       } else if (confirmPassword !== password) {
-        ctx.addIssue({ code: 'custom', message: 'Mật khẩu không khớp', path: ['confirmPassword'] })
+        ctx.addIssue({ code: 'custom', message: 'Passwords do not match', path: ['confirmPassword'] })
       }
     }
   })
@@ -88,7 +88,7 @@ export const ChangePasswordBody = z
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {
-      ctx.addIssue({ code: 'custom', message: 'Mật khẩu mới không khớp', path: ['confirmPassword'] })
+      ctx.addIssue({ code: 'custom', message: 'New passwords do not match', path: ['confirmPassword'] })
     }
   })
 

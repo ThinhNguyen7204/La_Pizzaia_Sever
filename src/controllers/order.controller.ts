@@ -1,6 +1,6 @@
 import orderService from '~/services/order.service'
 import { Request, Response } from 'express'
-import { CreateOrderBodyType, OrderParamsType, OrderQueryType } from '~/schemaValidations/order.schema'
+import { CreateOrderBodyType, OrderParamsType, OrderQueryType, UpdateOrderBodyType } from '~/schemaValidations/order.schema'
 
 export const getListOrderController = async (req: Request, res: Response) => {
   const { data, message } = await orderService.getListOrder(req.query as OrderQueryType)
@@ -20,6 +20,17 @@ export const getDetailOrderController = async (req: Request, res: Response) => {
 
 export const createOrderController = async (req: Request, res: Response) => {
   const { data, message } = await orderService.addOrder(req.body as CreateOrderBodyType)
+  return res.json({
+    message,
+    data
+  })
+}
+
+export const updateOrderController = async (req: Request, res: Response) => {
+  const { data, message } = await orderService.updateOrder(
+    req.params as OrderParamsType,
+    req.body as UpdateOrderBodyType
+  )
   return res.json({
     message,
     data

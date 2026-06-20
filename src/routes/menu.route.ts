@@ -5,7 +5,7 @@ import { wrapRequestHandler } from '~/utils/handlers'
 import z from 'zod'
 import {
   createMenuController,
-  deteleMenuController,
+  deleteMenuController,
   getMenuDetailController,
   getMenuListController,
   updateMenuController
@@ -39,7 +39,7 @@ menuRoutes.delete(
   requireLogined,
   requireAdmin,
   validateRequest(z.object({ params: MenuParams })),
-  wrapRequestHandler(deteleMenuController)
+  wrapRequestHandler(deleteMenuController)
 )
 
 export default menuRoutes

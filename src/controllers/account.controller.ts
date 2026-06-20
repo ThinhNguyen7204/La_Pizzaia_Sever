@@ -29,7 +29,7 @@ export const initAdminAccount = async () => {
     const chalk = await getChalk()
     console.log(
       chalk.bgCyan(
-        `Khởi tạo tài khoản admin thành công: ${envConfig.INITIAL_EMAIL_OWNER}|${envConfig.INITIAL_PASSWORD_OWNER}`
+        `Admin account initialized successfully: ${envConfig.INITIAL_EMAIL_OWNER}|${envConfig.INITIAL_PASSWORD_OWNER}`
       )
     )
   }

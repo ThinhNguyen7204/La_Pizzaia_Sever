@@ -6,7 +6,7 @@ import { errorHandlerMiddleware } from '~/middlewares/error.middleware'
 import envConfig, { API_URL } from '~/config'
 import { initAdminAccount } from '~/controllers/account.controller'
 import accountRoutes from '~/routes/account.route'
-import productRoutes from '~/routes/porduct.route'
+import productRoutes from '~/routes/product.route'
 import menuRoutes from '~/routes/menu.route'
 import orderRoutes from '~/routes/order.route'
 import cartRoutes from '~/routes/cart.route'
@@ -14,7 +14,7 @@ import customerRoutes from '~/routes/customer.route'
 import ingredientRoutes from '~/routes/ingredient.route'
 import supplierRoutes from '~/routes/supplier.route'
 import voucherRoutes from '~/routes/voucher.route'
-import loyaltyProgramRoutes from '~/routes/loyalty.route'
+import loyaltyProgramRoutes from '~/routes/loyaltyProgram.route'
 import mediaRoutes from '~/routes/media.route'
 import staticRoutes from '~/routes/static.route'
 
@@ -50,7 +50,7 @@ const start = async () => {
     await initAdminAccount()
     // Start server
     app.listen(envConfig.PORT, '0.0.0.0', () => {
-      console.log(`Server đang chạy: ${API_URL}`)
+      console.log(`Server is running: ${API_URL}`)
     })
   } catch (err) {
     console.error('Server startup error:', err)

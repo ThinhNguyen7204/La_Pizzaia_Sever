@@ -10,7 +10,7 @@ config({
 const checkEnv = async () => {
   const chalk = (await import('chalk')).default
   if (!fs.existsSync(path.resolve('.env'))) {
-    console.log(chalk.red(`Không tìm thấy file môi trường .env`))
+    console.log(chalk.red(`Environment file .env not found`))
     process.exit(1)
   }
 }
@@ -27,6 +27,10 @@ const configSchema = z.object({
   REFRESH_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRES_IN: z.string(),
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  GUEST_ACCESS_TOKEN_EXPIRES_IN: z.string(),
+  GUEST_REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  UPLOAD_FOLDER: z.string(),
+  IMAGEKIT_PRIVATE_KEY: z.string(),
   INITIAL_EMAIL_OWNER: z.string(),
   INITIAL_PASSWORD_OWNER: z.string()
 })
@@ -34,7 +38,7 @@ const configSchema = z.object({
 const configServer = configSchema.safeParse(process.env)
 if (!configServer.success) {
   console.error(configServer.error.issues)
-  throw new Error('Các giá trị khai báo trong file .env không hợp lệ')
+  throw new Error('The values declared in .env are invalid')
 }
 
 const envConfig = configServer.data

@@ -8,7 +8,7 @@ import ms, { type StringValue } from 'ms'
 import envConfig from '~/config'
 import RefreshToken from '~/database/models/refreshToken.model'
 import { verify } from 'node:crypto'
-import { AuthError } from '~/utils/errors'
+import { AuthError, EntityError } from '~/utils/errors'
 
 class AuthService {
   async logout(body: LogoutBodyType) {
@@ -24,11 +24,11 @@ class AuthService {
       email
     })
     if (!account) {
-      throw new Error('Account not found')
+      throw new EntityError([{ field: 'email', message: 'Email does not exist' }])
     }
     const isPasswordMatch = await comparePassword(password, account.password)
     if (!isPasswordMatch) {
-      throw new Error('Email hoặc mật khẩu không đúng')
+      throw new EntityError([{ field: 'password', message: 'Password is incorrect' }])
     }
     const accessToken = signAccessToken({
       userId: account._id.toString(),

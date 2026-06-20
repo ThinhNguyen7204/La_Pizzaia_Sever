@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createOrderController, getDetailOrderController, getListOrderController } from '~/controllers/order.controller'
+import { createOrderController, getDetailOrderController, getListOrderController, updateOrderController } from '~/controllers/order.controller'
 import { requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
 import { OrderParams, OrderQuery, CreateOrderBody, UpdateOrderBody } from '~/schemaValidations/order.schema'
@@ -22,7 +22,7 @@ orderRoutes.post('/', validateRequest(z.object({ body: CreateOrderBody })), wrap
 orderRoutes.put(
   '/:id',
   validateRequest(z.object({ params: OrderParams, body: UpdateOrderBody })),
-  wrapRequestHandler(getDetailOrderController)
+  wrapRequestHandler(updateOrderController)
 )
 
 export default orderRoutes

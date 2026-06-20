@@ -37,7 +37,7 @@ export const updateProductController = async (req: Request, res: Response) => {
   })
 }
 
-export const deteleProductController = async (req: Request, res: Response) => {
+export const deleteProductController = async (req: Request, res: Response) => {
   const { data, message } = await productService.deleteProduct(req.params as ProductParamsType)
   return res.json({
     message,
