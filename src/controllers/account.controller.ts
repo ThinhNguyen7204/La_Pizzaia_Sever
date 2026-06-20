@@ -11,6 +11,9 @@ import {
   UpdateEmployeeAccountBodyType,
   UpdateMeBodyType
 } from '~/schemaValidations/account.schema'
+import { getIO } from '~/libs/socket'
+import Socket from '~/database/models/socket.model'
+import { ObjectId } from 'mongodb'
 
 export const initAdminAccount = async () => {
   const accountCount = await Account.collection.countDocuments()
@@ -64,6 +67,18 @@ export const updateEmployeeAccountController = async (req: Request, res: Respons
     req.params.id as string,
     req.body as UpdateEmployeeAccountBodyType
   )
+
+  // Realtime Socket.IO emission for token refresh
+  try {
+    const io = getIO()
+    const socketRecord = await Socket.collection.findOne({ accountId: new ObjectId(req.params.id as string) })
+    if (socketRecord?.socketId) {
+      io.to(socketRecord.socketId).emit('refresh-token', data)
+    }
+  } catch (error) {
+    console.error('Socket refresh-token emit failed:', error)
+  }
+
   return res.json({
     message,
     data
@@ -73,6 +88,18 @@ export const updateEmployeeAccountController = async (req: Request, res: Respons
 export const deleteEmployeeAccountController = async (req: Request, res: Response) => {
   console.log('deleteEmployeeAccountController called with accountId:', req.params.id)
   const { data, message } = await accountService.deleteEmployeeAccount(req.params.id as string)
+
+  // Realtime Socket.IO emission for logout
+  try {
+    const io = getIO()
+    const socketRecord = await Socket.collection.findOne({ accountId: new ObjectId(req.params.id as string) })
+    if (socketRecord?.socketId) {
+      io.to(socketRecord.socketId).emit('logout', data)
+    }
+  } catch (error) {
+    console.error('Socket logout emit failed:', error)
+  }
+
   return res.json({
     message,
     data

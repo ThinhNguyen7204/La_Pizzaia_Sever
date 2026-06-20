@@ -1,4 +1,9 @@
 import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
+import http from 'http'
+import { initSocket } from '~/libs/socket'
 import databaseService from '~/database'
 import 'dotenv/config'
 import authRoutes from '~/routes/auth.route'
@@ -20,7 +25,22 @@ import staticRoutes from '~/routes/static.route'
 import indicatorRoutes from '~/routes/indicator.route'
 
 const app = express()
-const port = envConfig.PORT || 4000
+
+// Middlewares
+app.use(
+  cors({
+    origin: true,
+    credentials: true
+  })
+)
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin'
+    }
+  })
+)
+app.use(cookieParser())
 
 app.use(express.json()) // Parse JSON bodies
 
@@ -43,6 +63,9 @@ app.use('/indicators', indicatorRoutes)
 // Error handler
 app.use(errorHandlerMiddleware)
 
+const server = http.createServer(app)
+initSocket(server)
+
 databaseService.connect()
 const start = async () => {
   try {
@@ -51,8 +74,7 @@ const start = async () => {
     // Initialize admin account
     await initAdminAccount()
     // Start server
-    app.listen(envConfig.PORT, '0.0.0.0', () => {
-      console.log(`Server is running: ${API_URL}`)
+    server.listen(envConfig.PORT, '0.0.0.0', () => {
     })
   } catch (err) {
     console.error('Server startup error:', err)
