@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { Role } from '~/constants/type'
-import { AuthError } from '~/utils/errors'
+import { AuthError, ForbiddenError } from '~/utils/errors'
 import { verifyAccessToken } from '~/utils/jwt'
 
 export const requireLogined = (req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +18,7 @@ export const requireLogined = (req: Request, res: Response, next: NextFunction) 
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.decodedAccessToken?.role !== Role.Admin) {
-    return next(new AuthError('Access denied'))
+    return next(new ForbiddenError('Access denied'))
   }
   next()
 }
@@ -26,7 +26,7 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
 export const requireManager = (req: Request, res: Response, next: NextFunction) => {
   const role = req.decodedAccessToken?.role
   if (role !== Role.Admin && role !== Role.Manager) {
-    return next(new AuthError('Access denied'))
+    return next(new ForbiddenError('Access denied'))
   }
   next()
 }
