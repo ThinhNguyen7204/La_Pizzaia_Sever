@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import Order from '~/database/models/order.model'
+import databaseService from '~/database'
 import {
   CreateOrderBodyType,
   OrderListResType,
@@ -17,10 +18,54 @@ class OrderService {
       filter.customer_id = ObjectId.isValid(query.customer_id) ? new ObjectId(query.customer_id) : query.customer_id
     }
     if (query.status) filter.status = query.status
-    const order = await Order.collection.find(filter).sort({ createdAt: -1 }).toArray()
+    const orders = await Order.collection
+      .aggregate([
+        { $match: filter },
+        { $sort: { createdAt: -1 } },
+        {
+          $lookup: {
+            from: 'customers',
+            localField: 'customer_id',
+            foreignField: '_id',
+            as: 'customer_info'
+          }
+        },
+        {
+          $unwind: {
+            path: '$customer_info',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $lookup: {
+            from: 'accounts',
+            localField: 'customer_info.account_id',
+            foreignField: '_id',
+            as: 'account_info'
+          }
+        },
+        {
+          $unwind: {
+            path: '$account_info',
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $addFields: {
+            customer_name: { $ifNull: ['$account_info.username', 'Khách hàng'] }
+          }
+        },
+        {
+          $project: {
+            customer_info: 0,
+            account_info: 0
+          }
+        }
+      ])
+      .toArray()
     return {
       message: 'Get order list successfully',
-      data: order
+      data: orders
     } as OrderListResType
   }
 
@@ -29,9 +74,21 @@ class OrderService {
     if (!ObjectId.isValid(id)) throw new StatusError({ message: 'Order does not exist', status: 404 })
     const order = await Order.collection.findOne({ _id: new ObjectId(id) })
     if (!order) throw new StatusError({ message: 'Order does not exist', status: 404 })
+    
+    let customer_name = 'Khách hàng'
+    if (order.customer_id) {
+      const customer = await databaseService.db.collection('customers').findOne({ _id: order.customer_id })
+      if (customer) {
+        const account = await databaseService.db.collection('accounts').findOne({ _id: customer.account_id })
+        if (account) {
+          customer_name = account.username
+        }
+      }
+    }
+    
     return {
       message: 'Get order detail successfully',
-      data: order
+      data: { ...order, customer_name }
     } as OrderResType
   }
 

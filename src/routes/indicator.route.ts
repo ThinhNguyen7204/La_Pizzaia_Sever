@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getDashboardIndicatorsController } from '~/controllers/indicator.controller'
-import { requireAdmin, requireLogined } from '~/middlewares/auth.middleware'
+import { requireManagerOrSales, requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
 import { DashboardIndicatorQueryParams } from '~/schemaValidations/indicator.schema'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -11,7 +11,7 @@ const indicatorRoutes = Router()
 indicatorRoutes.get(
   '/dashboard',
   requireLogined,
-  requireAdmin,
+  requireManagerOrSales,
   validateRequest(z.object({ query: DashboardIndicatorQueryParams })),
   wrapRequestHandler(getDashboardIndicatorsController)
 )

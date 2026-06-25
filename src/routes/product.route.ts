@@ -6,7 +6,7 @@ import {
   updateProductController,
   deleteProductController
 } from '~/controllers/product.controller'
-import { requireAdmin, requireLogined } from '~/middlewares/auth.middleware'
+import { requireManager, requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
 import { CreateProductBody, ProductParams, UpdateProductBody } from '~/schemaValidations/product.schema'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -25,7 +25,7 @@ productRoutes.get(
 productRoutes.post(
   '/',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ body: CreateProductBody })),
   wrapRequestHandler(createProductController)
 )
@@ -33,7 +33,7 @@ productRoutes.post(
 productRoutes.put(
   '/:id',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: ProductParams, body: UpdateProductBody })),
   wrapRequestHandler(updateProductController)
 )
@@ -41,7 +41,7 @@ productRoutes.put(
 productRoutes.delete(
   '/:id',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: ProductParams })),
   wrapRequestHandler(deleteProductController)
 )

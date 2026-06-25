@@ -7,7 +7,7 @@ import {
   getCustomerListController,
   updateCustomerController
 } from '~/controllers/customer.controller'
-import { requireAdmin, requireLogined } from '~/middlewares/auth.middleware'
+import { requireManager, requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 import { CreateCustomerBody, CustomerParams, UpdateCustomerBody } from '~/schemaValidations/customer.schema'
@@ -16,32 +16,32 @@ const customerRoutes = Router()
 
 customerRoutes.use(requireLogined)
 
-customerRoutes.get('/', requireAdmin, wrapRequestHandler(getCustomerListController))
+customerRoutes.get('/', requireManager, wrapRequestHandler(getCustomerListController))
 
 customerRoutes.get(
   '/:id',
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: CustomerParams })),
   wrapRequestHandler(getCustomerDetailController)
 )
 
 customerRoutes.post(
   '/',
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ body: CreateCustomerBody })),
   wrapRequestHandler(createCustomerController)
 )
 
 customerRoutes.put(
   '/:id',
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: CustomerParams, body: UpdateCustomerBody })),
   wrapRequestHandler(updateCustomerController)
 )
 
 customerRoutes.delete(
   '/:id',
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: CustomerParams })),
   wrapRequestHandler(deleteCustomerController)
 )

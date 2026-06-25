@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { requireAdmin, requireLogined } from '~/middlewares/auth.middleware'
+import { requireManager, requireLogined } from '~/middlewares/auth.middleware'
 import { validateRequest } from '~/middlewares/validator.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 import z from 'zod'
@@ -21,7 +21,7 @@ menuRoutes.get('/:id', validateRequest(z.object({ params: MenuParams })), wrapRe
 menuRoutes.post(
   '/',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ body: CreateMenuBody })),
   wrapRequestHandler(createMenuController)
 )
@@ -29,7 +29,7 @@ menuRoutes.post(
 menuRoutes.put(
   '/:id',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: MenuParams, body: UpdateMenuBody })),
   wrapRequestHandler(updateMenuController)
 )
@@ -37,7 +37,7 @@ menuRoutes.put(
 menuRoutes.delete(
   '/:id',
   requireLogined,
-  requireAdmin,
+  requireManager,
   validateRequest(z.object({ params: MenuParams })),
   wrapRequestHandler(deleteMenuController)
 )

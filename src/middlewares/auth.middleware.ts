@@ -31,3 +31,12 @@ export const requireManager = (req: Request, res: Response, next: NextFunction) 
   next()
 }
 
+export const requireManagerOrSales = (req: Request, res: Response, next: NextFunction) => {
+  const role = req.decodedAccessToken?.role
+  if (role !== Role.Admin && role !== Role.Manager && role !== Role.Sales) {
+    return next(new ForbiddenError('Access denied'))
+  }
+  next()
+}
+
+

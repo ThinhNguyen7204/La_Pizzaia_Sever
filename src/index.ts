@@ -23,6 +23,7 @@ import loyaltyProgramRoutes from '~/routes/loyaltyProgram.route'
 import mediaRoutes from '~/routes/media.route'
 import staticRoutes from '~/routes/static.route'
 import indicatorRoutes from '~/routes/indicator.route'
+import supportRoutes from '~/routes/support.route'
 
 const app = express()
 
@@ -59,6 +60,7 @@ app.use('/loyalty-programs', loyaltyProgramRoutes)
 app.use('/media', mediaRoutes)
 app.use('/static', staticRoutes)
 app.use('/indicators', indicatorRoutes)
+app.use('/supports', supportRoutes)
 
 // Error handler
 app.use(errorHandlerMiddleware)
